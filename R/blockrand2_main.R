@@ -64,7 +64,7 @@ createTestdata <- function
 
     n <- sum.counts
 
-    properties <- combis[rep(1:4, times = n.per.stratum), ]
+    properties <- combis[rep(seq_len(n.combis), times = n.per.stratum), ]
 
     properties <- properties[sample(nrow(properties)), ]
 
