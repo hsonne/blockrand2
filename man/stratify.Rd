@@ -2,16 +2,16 @@
 % Please edit documentation in R/blockrand2_main.R
 \name{stratify}
 \alias{stratify}
-\title{Group and count data by combinations of strata}
+\title{Group and count data by combinations of strata variables}
 \usage{
-stratify(x, strata = toStrataList(x, exclude = names(x)[1]), column.n = "n",
-  format.stratum = "S\%02d")
+stratify(x, strataVars = toStrataVars(x, exclude = names(x)[1]),
+  column.n = "n", column.stratum = "stratum", format.stratum = "S\%02d")
 }
 \arguments{
 \item{x}{Data frame with stratum values in columns}
 
-\item{strata}{List of strata. By default it is created from all but the first
-columns of \code{x}.}
+\item{strataVars}{List of strata variables. By default it is created from all
+but the first columns of \code{x}.}
 
 \item{column.n}{Column name to be used in the output for the column
 containing the number of records falling into the combination of stratum
@@ -28,9 +28,24 @@ Group data by combinations of stratum values and count the records falling
 into each combination.
 }
 \examples{
-strata <- list(sex = c("female", "male"), medication = c("yes", "no"))
-x <- createTestdata(strata)
-stratify(x, strata)
-stratify(x, strata, column.n = "n.patients")
+# Define stratifying variables
+strataVars <- list(sex = c("female", "male"), medication = c("yes", "no"))
+
+# Create some random testdata
+x <- createTestdata(strataVars)
+
+# Count records in each stratum
+stratify(x, strataVars)
+stratify(x, strataVars, column.n = "n.patients")
+
+# Create testdata with defined numbers of records in each stratum
+n.per.stratum <- 1:4
+y <- createTestdata(strataVars, n.per.stratum = n.per.stratum)
+
+# Count records in each stratum
+(counts <- stratify(y, strataVars))
+
+# Check if the numbers of records in each stratum are as expected
+all(counts$n == n.per.stratum)
 }
 

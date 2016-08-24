@@ -1,27 +1,84 @@
 # createTestdata ---------------------------------------------------------------
 #' Create testdata for clinical studies
 #'
-#' @param strata List of strata
+#' @param strataVars List of strata variables, each of which is defined in
+#'   the form of a vector of possible (character) values.
 #' @param n Number of records to be created
-#' @param format.patient format string to be used in \code{format} to create a
-#'   unique id for each patient
+#' @param n.per.stratum optional. Vector of integer numbers defining the number
+#'   of records for each possible stratum. The length of this vector must be
+#'   equal to the number of possible strata (resulting from the product of
+#'   lengths of vectors in \code{strataVars})
+#' @param format.patient Passed as argument \code{format} to \code{sprintf()}
+#'   when creating a unique id for each patient
+#' @param offset.patient integer number to be added to the generated patient
+#'   numbers \code{1:n}. Defaults to \code{0}.
 #' @export
 #' @return Data frame with a column \code{patient} containing the patient's ID
 #' and one column for each stratum, named according to the element names in
-#' \code{strata}
+#' \code{strataVars}
 #' @examples
-#' createTestdata(
-#'   strata = list(
-#'     sex = c("female", "male"),
-#'     medication = c("yes", "no")
-#'   ),
-#'   n = 20
+#' strataVars <- list(
+#'  sex = c("female", "male"),
+#'  medication = c("yes", "no")
 #' )
-createTestdata <- function(strata, n = 30, format.patient = "P%03d")
+#'
+#' createTestdata(strataVars, n = 20)
+#'
+#' # Define the number of patients in each stratum (there are four possible
+#' # strata: length(strataVars$sex) * length(strataVars$medication))
+#' createTestdata(strataVars, n.per.stratum = c(5, 6, 3, 4))
+createTestdata <- function
+(
+  strataVars,
+  n = if (is.null(n.per.stratum)) 30 else NULL,
+  n.per.stratum = NULL,
+  format.patient = "P%03d",
+  offset.patient = 0
+)
 {
+  if (! is.null(n.per.stratum)) {
+
+    combis <- createCombinations(strataVars)
+
+    n.counts <- length(n.per.stratum)
+    n.combis <- nrow(combis)
+
+    if (n.counts != n.combis) {
+
+      stop(sprintf(
+        paste("The length of n.per.stratum (= %d) must be equal to the number",
+              "of possible strata (= %d)!"),
+        n.counts, n.combis
+      ), call. = FALSE)
+    }
+
+    sum.counts <- sum(n.per.stratum)
+
+    if (! is.null(n) && sum.counts != n) {
+
+      warning(sprintf(
+        "n (= %d) is overriden by sum(n.per.stratum) (= %d).",
+        n, sum.counts
+      ), call. = FALSE)
+    }
+
+    n <- sum.counts
+
+    properties <- combis[rep(1:4, times = n.per.stratum), ]
+
+    properties <- properties[sample(nrow(properties)), ]
+
+    rownames(properties) <- NULL
+  }
+  else {
+    properties <- data.frame(
+      lapply(strataVars, sample, size = n, replace = TRUE)
+    )
+  }
+
   cbind(
-    patient = sprintf(format.patient, seq_len(n)),
-    data.frame(lapply(strata, sample, size = n, replace = TRUE)),
+    patient = sprintf(format.patient, seq_len(n) + offset.patient),
+    properties,
     stringsAsFactors = FALSE
   )
 }
@@ -34,14 +91,14 @@ readRealData <- function(file)
 }
 
 # stratify ---------------------------------------------------------------------
-#' Group and count data by combinations of strata
+#' Group and count data by combinations of strata variables
 #'
 #' Group data by combinations of stratum values and count the records falling
 #' into each combination.
 #'
 #' @param x Data frame with stratum values in columns
-#' @param strata List of strata. By default it is created from all but the first
-#'   columns of \code{x}.
+#' @param strataVars List of strata variables. By default it is created from all
+#'   but the first columns of \code{x}.
 #' @param column.n Column name to be used in the output for the column
 #'   containing the number of records falling into the combination of stratum
 #'   values.
@@ -50,55 +107,75 @@ readRealData <- function(file)
 #' @export
 #' @return Data frame with each row representing a combination of stratum values
 #' @examples
-#' strata <- list(sex = c("female", "male"), medication = c("yes", "no"))
-#' x <- createTestdata(strata)
-#' stratify(x, strata)
-#' stratify(x, strata, column.n = "n.patients")
+#' # Define stratifying variables
+#' strataVars <- list(sex = c("female", "male"), medication = c("yes", "no"))
+#'
+#' # Create some random testdata
+#' x <- createTestdata(strataVars)
+#'
+#' # Count records in each stratum
+#' stratify(x, strataVars)
+#' stratify(x, strataVars, column.n = "n.patients")
+#'
+#' # Create testdata with defined numbers of records in each stratum
+#' n.per.stratum <- 1:4
+#' y <- createTestdata(strataVars, n.per.stratum = n.per.stratum)
+#'
+#' # Count records in each stratum
+#' (counts <- stratify(y, strataVars))
+#'
+#' # Check if the numbers of records in each stratum are as expected
+#' all(counts$n == n.per.stratum)
 stratify <- function
 (
   x,
-  strata = toStrataList(x, exclude = names(x)[1]),
+  strataVars = toStrataVars(x, exclude = names(x)[1]),
   column.n = "n",
+  column.stratum = "stratum",
   format.stratum = "S%02d"
 )
 {
   stopifnot(is.data.frame(x))
-  stopifnot(is.list(strata))
+  stopifnot(is.list(strataVars))
 
   names.x <- names(x)
-  names.strata <- names(strata)
+  names.strataVars <- names(strataVars)
 
-  stopifnot(all(names.strata %in% names.x))
-  stopifnot(all(names.strata != column.n))
+  stopifnot(all(names.strataVars %in% names.x))
+  stopifnot(all(names.strataVars != column.n))
 
   # Add a helper column "column.n" to the left of x
   x <- cbind(1, x)
   names(x)[1] <- column.n
 
   # Calculate the number of patients per stratum
-  grouped <- aggregate(toFormula(column.n, names.strata), x, length)
+  grouped <- aggregate(toFormula(column.n, names.strataVars), x, length)
 
   # Check the result for plausibility
   stopifnot(sum(grouped[[column.n]]) == nrow(x))
 
-  # Create all possible combinations of strata
-  combis <- createCombinations(strata)
+  # Create all possible combinations of strata variables
+  combis <- createCombinations(strataVars)
 
-  # Merge the number of patients for each combination of strata
+  combis <- cbind(
+    stratum = sprintf(format.stratum, seq_len(nrow(combis))),
+    combis,
+    stringsAsFactors = FALSE
+  )
+
+  # Merge the number of patients for each combination of strata variables
   out <- merge(combis, grouped, all.x = TRUE)
 
   # replace NAs with 0
   out[is.na(out)] <- 0
 
-  cbind(
-    stratum = sprintf(format.stratum, seq_len(nrow(out))),
-    out,
-    stringsAsFactors = FALSE
-  )
+  columns <- c(column.stratum, setdiff(names(out), column.stratum))
+
+  out[order(out[[column.stratum]]), columns]
 }
 
-# toStrataList -----------------------------------------------------------------
-toStrataList <- function
+# toStrataVars -----------------------------------------------------------------
+toStrataVars <- function
 (
   x,
   include = setdiff(names(x), exclude),
@@ -131,8 +208,9 @@ toFormula <- function(y, x)
 #'
 #' Create all possible combinations of values given in a list of value vectors
 #'
-#' @param strata List of vectors containing the values to be combined. The names
-#'   of the list elements will appear as column names in the output data frame.
+#' @param strataVars List of vectors containing the values to be combined. The
+#'   names of the list elements will appear as column names in the output data
+#'   frame.
 #' @export
 #' @return Data frame with each row representing a possible combination of
 #'   values.
@@ -142,13 +220,13 @@ toFormula <- function(y, x)
 #'   smokes = c("yes", "sometimes", "no"),
 #'   cancer = c("yes", "no")
 #' ))
-createCombinations <- function(strata)
+createCombinations <- function(strataVars)
 {
-  strataNames <- names(strata)
+  strataNames <- names(strataVars)
 
-  for (i in seq_len(length(strata))) {
+  for (i in seq_len(length(strataVars))) {
 
-    x <- data.frame(strata[[i]])
+    x <- data.frame(strataVars[[i]])
     names(x) <- strataNames[i]
 
     if (i == 1) {

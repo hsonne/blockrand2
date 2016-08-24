@@ -4,31 +4,44 @@
 \alias{createTestdata}
 \title{Create testdata for clinical studies}
 \usage{
-createTestdata(strata, n = 30, format.patient = "P\%03d")
+createTestdata(strataVars, n = if (is.null(n.per.stratum)) 30 else NULL,
+  n.per.stratum = NULL, format.patient = "P\%03d", offset.patient = 0)
 }
 \arguments{
-\item{strata}{List of strata}
+\item{strataVars}{List of strata variables, each of which is defined in
+the form of a vector of possible (character) values.}
 
 \item{n}{Number of records to be created}
 
-\item{format.patient}{format string to be used in \code{format} to create a
-unique id for each patient}
+\item{n.per.stratum}{optional. Vector of integer numbers defining the number
+of records for each possible stratum. The length of this vector must be
+equal to the number of possible strata (resulting from the product of
+lengths of vectors in \code{strataVars})}
+
+\item{format.patient}{Passed as argument \code{format} to \code{sprintf()}
+when creating a unique id for each patient}
+
+\item{offset.patient}{integer number to be added to the generated patient
+numbers \code{1:n}. Defaults to \code{0}.}
 }
 \value{
 Data frame with a column \code{patient} containing the patient's ID
 and one column for each stratum, named according to the element names in
-\code{strata}
+\code{strataVars}
 }
 \description{
 Create testdata for clinical studies
 }
 \examples{
-createTestdata(
-  strata = list(
-    sex = c("female", "male"),
-    medication = c("yes", "no")
-  ),
-  n = 20
+strataVars <- list(
+ sex = c("female", "male"),
+ medication = c("yes", "no")
 )
+
+createTestdata(strataVars, n = 20)
+
+# Define the number of patients in each stratum (there are four possible
+# strata: length(strataVars$sex) * length(strataVars$medication))
+createTestdata(strataVars, n.per.stratum = c(5, 6, 3, 4))
 }
 
