@@ -3,6 +3,7 @@
 export(blocksize)
 export(createCombinations)
 export(createRandomSequences)
+export(createRandomisationDoc)
 export(createTestdata)
 export(equalDistribution)
 export(stratify)

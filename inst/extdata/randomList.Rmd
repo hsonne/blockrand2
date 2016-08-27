@@ -1,0 +1,109 @@
+---
+output:
+  html_document:
+    toc: true
+    theme: united
+  pdf_document:
+    toc: true
+    highlight: zenburn
+  word_document:
+    toc: true
+
+params:
+    param_title: "Randomisation list"
+    param_author: "Author"
+    param_date: "Today"
+
+title: '`r params$param_title`'
+author: '`r params$param_author`'
+date: '`r params$param_date`'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+
+sectionHeader <- function(stratumInfo, n.treatments)
+{
+  cat(sprintf(
+    "\n## Stratum: %s (%s)\n", 
+    stratumInfo$stratum,
+    blockrand2::toStratumString(stratumInfo[, -ncol(stratumInfo)])
+  ))
+  
+  cat("Number of patients in stratum:", stratumInfo$n, "  \n")
+
+  cat("Block length:", blocksize(stratumInfo$n, n.treatments), "  \n")  
+}
+```
+
+# Strata
+
+```{r}
+noRowNameTable(
+  byStratum[, seq_len(ncol(byStratum) - 2)], 
+  caption = paste("All possible strata defined by the possible combinations",
+                  "of stratum variable levels.")
+)
+```
+
+# Therapies
+
+```{r}
+noRowNameTable(
+  data.frame(
+    acronym = names(treatments),
+    therapy = as.character(treatments)
+  ), 
+  caption = "Possible therapies to be applied to the patients."
+)
+```
+
+# List of Patients with Stratum and Treatment
+
+```{r}
+noRowNameTable(
+  moveColumnsFirst(patientsWithTreatments, c("patient", "stratum")),
+  caption = "Full list of patients with information on stratum and treatement."
+)
+```
+
+# Number of Patients within each Stratum 
+
+```{r}
+out <- merge(
+  x = byStratum[, -ncol(byStratum)], 
+  y = mergeAll(treatmentsByStratum(patientsWithTreatments, treatments))
+)
+
+noRowNameTable(
+  out[order(out$stratum), ], 
+  caption = paste("Number n of patients in stratum and numbers n.*therapy*",
+                  "of patients that are treated with *therapy*")
+)
+
+newPageIf(newpage)
+```
+
+# Therapies by Stratum
+
+```{r}
+x <- patientsWithTreatments[, c("patient", "stratum", "treatment")]
+
+x$therapy <- therapyString(x$treatment, treatments)
+
+for (stratum in byStratum$stratum) {
+
+  sectionHeader(
+    stratumInfo = byStratum[byStratum$stratum == stratum, ],
+    n.treatments = length(treatments)
+  )
+
+  print(noRowNameTable(
+    x[x$stratum == stratum, -(2:3)],
+    caption = paste0("Patiens falling into stratum '", stratum, 
+                     "', with their assigned treatment.")
+  ))
+  
+  newPageIf(newpage)
+}
+```

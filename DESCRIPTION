@@ -5,6 +5,7 @@ Version: 0.1.0
 Author: Hauke Sonnenberg
 Maintainer: Hauke Sonnenberg <hauke.sonnenberg@gmx.de>
 Description: Create block randomised treatment lists for clinical studies.
+Imports: rmarkdown, knitr
 License: GPL (>= 2)
 LazyData: TRUE
 RoxygenNote: 5.0.1
