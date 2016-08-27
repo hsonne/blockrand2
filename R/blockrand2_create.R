@@ -55,8 +55,8 @@
 #' # Create some patient's testdata using the stratum levels
 #' patients <- createTestdata(strataVars, 40)
 #'
-#' # Create the randomisation list documents.
-#' # The full path to the output directory is returned invisibly.
+#' # Create the randomisation list documents. We store the paths to the created
+#' # files that are returned invisibly by createRandomisationDoc() in a variable
 #' files <- createRandomisationDoc(
 #'   patients = patients,
 #'   strataVars = strataVars,

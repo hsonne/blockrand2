@@ -1,6 +1,6 @@
 Package: blockrand2
 Type: Package
-Title: block randomisation for clinical studies
+Title: Block Randomisation for Clinical Studies
 Version: 0.1.0
 Author: Hauke Sonnenberg
 Maintainer: Hauke Sonnenberg <hauke.sonnenberg@gmx.de>
