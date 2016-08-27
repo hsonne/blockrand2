@@ -29,6 +29,7 @@
 #' @return Named vector of character containing the full paths to the created
 #'   files as values and the file extensions (\code{html, docx, pdf}) as names
 #' @export
+#' @importFrom rmarkdown render
 #' @examples
 #' \dontrun{
 #'
@@ -197,6 +198,7 @@ treatmentsByStratum <- function(patientsWithTreatments, treatments)
 }
 
 # noRowNameTable ---------------------------------------------------------------
+#' @importFrom knitr kable
 noRowNameTable <- function(x, ...)
 {
   knitr::kable(x, row.names = FALSE, ...)
