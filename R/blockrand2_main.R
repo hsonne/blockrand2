@@ -102,6 +102,8 @@ readRealData <- function(file)
 #' @param column.n Column name to be used in the output for the column
 #'   containing the number of records falling into the combination of stratum
 #'   values.
+#' @param column.stratum Column name to be used in the output for the column
+#'   containing the stratum identifier
 #' @param format.stratum format string to be used in \code{format} to create a
 #'   unique id for each stratum
 #' @export

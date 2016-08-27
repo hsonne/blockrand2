@@ -17,6 +17,9 @@ but the first columns of \code{x}.}
 containing the number of records falling into the combination of stratum
 values.}
 
+\item{column.stratum}{Column name to be used in the output for the column
+containing the stratum identifier}
+
 \item{format.stratum}{format string to be used in \code{format} to create a
 unique id for each stratum}
 }
