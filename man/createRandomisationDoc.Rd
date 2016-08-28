@@ -88,7 +88,7 @@ files <- createRandomisationDoc(
 files
 
 # Open the html file in the default browser
-getOption("browser")(files["html"])
+browseURL(files["html"])
 
 # Open the pdf file in the default PDF viewer
 system(paste(getOption("pdfviewer"), files["pdf"]))
