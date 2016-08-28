@@ -150,7 +150,7 @@ appropriate applications (if defined in the `options()`):
 
 ```{r open_files, eval = FALSE}
 # Open the html file in the default browser
-getOption("browser")(files["html"])
+browseURL(files["html"])
 
 # Open the pdf file in the default PDF viewer
 system(paste(getOption("pdfviewer"), files["pdf"]))

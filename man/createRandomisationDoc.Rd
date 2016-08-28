@@ -94,4 +94,8 @@ getOption("browser")(files["html"])
 system(paste(getOption("pdfviewer"), files["pdf"]))
 }
 }
+\seealso{
+\url{https://github.com/hsonne/blockrand2} (provides a short
+  tutorial in the README file)
+}
 

@@ -30,6 +30,8 @@
 #'   files as values and the file extensions (\code{html, docx, pdf}) as names
 #' @export
 #' @importFrom rmarkdown render
+#' @seealso \url{https://github.com/hsonne/blockrand2} (provides a short
+#'   tutorial in the README file)
 #' @examples
 #' \dontrun{
 #'
@@ -69,7 +71,7 @@
 #' files
 #'
 #' # Open the html file in the default browser
-#' getOption("browser")(files["html"])
+#' browseURL(files["html"])
 #'
 #' # Open the pdf file in the default PDF viewer
 #' system(paste(getOption("pdfviewer"), files["pdf"]))
@@ -91,7 +93,7 @@ createRandomisationDoc <- function
 )
 {
   # Group and count by stratum
-  (byStratum <- stratify(patients, strataVars))
+  byStratum <- stratify(patients, strataVars)
 
   # Create random sequences of treatments (A, B)
   sequences <- createRandomSequences(
