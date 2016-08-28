@@ -73,12 +73,12 @@ Let's have a look at the first lines of the created table:
 ``` r
 head(patients)
 #>   patient    sex crazyness
-#> 1    P001   male    medium
-#> 2    P002 female      weak
-#> 3    P003 female    medium
-#> 4    P004 female    strong
-#> 5    P005   male      weak
-#> 6    P006 female    strong
+#> 1    P001   male      weak
+#> 2    P002   male    medium
+#> 3    P003 female      weak
+#> 4    P004 female    medium
+#> 5    P005 female    medium
+#> 6    P006   male    strong
 ```
 
 Once you have prepared a file (e.g. in CSV format) containing the real data you will replace the above line with something like this:
@@ -111,18 +111,18 @@ The full paths to the generated files are returned invisibly. Since we stored th
 # Show the paths of the created files
 files
 #>                                         docx 
-#> "/tmp/RtmpPvYKHB/blockrand2/randomList.docx" 
+#> "/tmp/Rtmp6l2PHg/blockrand2/randomList.docx" 
 #>                                         html 
-#> "/tmp/RtmpPvYKHB/blockrand2/randomList.html" 
+#> "/tmp/Rtmp6l2PHg/blockrand2/randomList.html" 
 #>                                          pdf 
-#>  "/tmp/RtmpPvYKHB/blockrand2/randomList.pdf"
+#>  "/tmp/Rtmp6l2PHg/blockrand2/randomList.pdf"
 ```
 
 but also use them from within `R` to open the created files with their appropriate applications (if defined in the `options()`):
 
 ``` r
 # Open the html file in the default browser
-getOption("browser")(files["html"])
+browseURL(files["html"])
 
 # Open the pdf file in the default PDF viewer
 system(paste(getOption("pdfviewer"), files["pdf"]))
