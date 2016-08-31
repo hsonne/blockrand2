@@ -165,21 +165,6 @@ moveColumnsFirst <- function(x, columns)
   x[, c(columns, setdiff(names(x), columns))]
 }
 
-# mergeAll ---------------------------------------------------------------------
-mergeAll <- function(L)
-{
-  for (i in seq_along(L)) {
-
-    if (i == 1) {
-      out <- L[[i]]
-    } else {
-      out <- merge(out, L[[i]])
-    }
-  }
-
-  out
-}
-
 # treatmentsByStratum ----------------------------------------------------------
 treatmentsByStratum <- function(patientsWithTreatments, treatments)
 {

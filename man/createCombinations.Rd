@@ -4,10 +4,10 @@
 \alias{createCombinations}
 \title{Create all possible combinations of values}
 \usage{
-createCombinations(strataVars)
+createCombinations(x)
 }
 \arguments{
-\item{strataVars}{List of vectors containing the values to be combined. The
+\item{x}{List of vectors containing the values to be combined. The
 names of the list elements will appear as column names in the output data
 frame.}
 }

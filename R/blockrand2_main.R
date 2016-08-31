@@ -210,7 +210,7 @@ toFormula <- function(y, x)
 #'
 #' Create all possible combinations of values given in a list of value vectors
 #'
-#' @param strataVars List of vectors containing the values to be combined. The
+#' @param x List of vectors containing the values to be combined. The
 #'   names of the list elements will appear as column names in the output data
 #'   frame.
 #' @export
@@ -222,24 +222,33 @@ toFormula <- function(y, x)
 #'   smokes = c("yes", "sometimes", "no"),
 #'   cancer = c("yes", "no")
 #' ))
-createCombinations <- function(strataVars)
+createCombinations <- function(x)
 {
-  strataNames <- names(strataVars)
+  names.x <- names(x)
 
-  for (i in seq_len(length(strataVars))) {
+  # Create a list of data frames each of which has exactly one column containing
+  # the values of one list element of x
+  L <- lapply(seq_along(x), function(i) {
+    structure(data.frame(x[[i]]), names = names.x[i])
+  })
 
-    x <- data.frame(strataVars[[i]])
-    names(x) <- strataNames[i]
+  # Return the result data frame with reverted column order
+  revertColumnOrder(mergeAll(L))
+}
+
+# mergeAll ---------------------------------------------------------------------
+mergeAll <- function(L)
+{
+  for (i in seq_along(L)) {
 
     if (i == 1) {
-      result <- x
+      out <- L[[i]]
     } else {
-      result <- merge(x, result)
+      out <- merge(out, L[[i]])
     }
   }
 
-  # Return the result data frame with reverted column order
-  revertColumnOrder(result)
+  out
 }
 
 # revertColumnOrder ------------------------------------------------------------
