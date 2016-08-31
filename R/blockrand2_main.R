@@ -73,7 +73,7 @@ createTestdata <- function
 checkAndStopOrWarn <- function(n.per.stratum, n.combis, n)
 {
   n.counts <- length(n.per.stratum)
-  sum.counts = sum(n.per.stratum)
+  sum.counts <- sum(n.per.stratum)
 
   if (n.counts != n.combis) {
 
