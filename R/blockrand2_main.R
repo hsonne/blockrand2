@@ -239,6 +239,7 @@ createCombinations <- function(x)
 # mergeAll ---------------------------------------------------------------------
 mergeAll <- function(x)
 {
+  # x must be a list of data frames
   stopifnot(is.list(x))
   stopifnot(all(sapply(x, is.data.frame)))
 
