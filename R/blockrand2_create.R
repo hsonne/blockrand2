@@ -26,8 +26,8 @@
 #' @param outdir full path to the output directory to which the created document
 #'   files are written. By default the files are written to a subfolder
 #'   \code{blockrand2} in the current R session's temporary directory
-#' @return Named vector of character containing the full paths to the created
-#'   files as values and the file extensions (\code{html, docx, pdf}) as names
+#' @return list containing the full paths to the created files as values and the
+#'   file extensions (\code{html, docx, pdf}) as element names
 #' @export
 #' @importFrom rmarkdown render
 #' @seealso \url{https://github.com/hsonne/blockrand2} (provides a short
@@ -71,10 +71,10 @@
 #' files
 #'
 #' # Open the html file in the default browser
-#' browseURL(files["html"])
+#' browseURL(files$html)
 #'
 #' # Open the pdf file in the default PDF viewer
-#' system(paste(getOption("pdfviewer"), files["pdf"]))
+#' system(paste(getOption("pdfviewer"), files$pdf))
 #' }
 createRandomisationDoc <- function
 (
@@ -130,7 +130,7 @@ createRandomisationDoc <- function
 
   files <- dir(outdir, pattern, full.names = TRUE)
 
-  structure(files, names = gsub(pattern, "", basename(files)))
+  structure(as.list(files), names = gsub(pattern, "", basename(files)))
 }
 
 # assignTreatments -------------------------------------------------------------

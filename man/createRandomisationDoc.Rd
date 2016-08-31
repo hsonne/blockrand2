@@ -42,8 +42,8 @@ files are written. By default the files are written to a subfolder
 \code{blockrand2} in the current R session's temporary directory}
 }
 \value{
-Named vector of character containing the full paths to the created
-  files as values and the file extensions (\code{html, docx, pdf}) as names
+list containing the full paths to the created files as values and the
+  file extensions (\code{html, docx, pdf}) as element names
 }
 \description{
 Create block randomisation list documents in three possible formats:
@@ -88,10 +88,10 @@ files <- createRandomisationDoc(
 files
 
 # Open the html file in the default browser
-browseURL(files["html"])
+browseURL(files$html)
 
 # Open the pdf file in the default PDF viewer
-system(paste(getOption("pdfviewer"), files["pdf"]))
+system(paste(getOption("pdfviewer"), files$pdf))
 }
 }
 \seealso{
