@@ -40,47 +40,68 @@ createTestdata <- function
 
     combis <- createCombinations(strataVars)
 
-    n.counts <- length(n.per.stratum)
     n.combis <- nrow(combis)
 
-    if (n.counts != n.combis) {
+    # Check and react on the relation between the different numbers
+    checkAndStopOrWarn(n.per.stratum, n.combis, n)
 
-      stop(sprintf(
-        paste("The length of n.per.stratum (= %d) must be equal to the number",
-              "of possible strata (= %d)!"),
-        n.counts, n.combis
-      ), call. = FALSE)
-    }
+    # Create index vector to be used on combis
+    indices <- rep(seq_len(n.combis), times = n.per.stratum)
 
-    sum.counts <- sum(n.per.stratum)
-
-    if (! is.null(n) && sum.counts != n) {
-
-      warning(sprintf(
-        "n (= %d) is overriden by sum(n.per.stratum) (= %d).",
-        n, sum.counts
-      ), call. = FALSE)
-    }
-
-    n <- sum.counts
-
-    properties <- combis[rep(seq_len(n.combis), times = n.per.stratum), ]
-
-    properties <- properties[sample(nrow(properties)), ]
-
-    rownames(properties) <- NULL
+    out <- resetRowNames(combis[shuffle(indices), ])
   }
   else {
-    properties <- data.frame(
-      lapply(strataVars, sample, size = n, replace = TRUE)
-    )
+    # Create a list of vectors each of which contains random values of one
+    # stratum variable
+    out <- lapply(strataVars, sample, size = n, replace = TRUE)
+
+    # Convert list to data frame
+    out <- data.frame(out)
   }
 
+  # Create the patient's IDs
+  ids <- seq_len(nrow(out)) + offset.patient
+
   cbind(
-    patient = sprintf(format.patient, seq_len(n) + offset.patient),
-    properties,
+    patient = sprintf(format.patient, ids), # formatted IDs
+    out,
     stringsAsFactors = FALSE
   )
+}
+
+# checkAndStopOrWarn -----------------------------------------------------------
+checkAndStopOrWarn <- function(n.per.stratum, n.combis, n)
+{
+  n.counts <- length(n.per.stratum)
+  sum.counts = sum(n.per.stratum)
+
+  if (n.counts != n.combis) {
+
+    text <-sprintf(
+      paste("The length of n.per.stratum (= %d) must be equal to the number",
+            "of possible strata (= %d)!"),
+      n.counts, n.combis
+    )
+
+    stop(text, call. = FALSE)
+  }
+
+  if (! is.null(n) && sum.counts != n) {
+
+    text <- sprintf(
+      "n (= %d) is overriden by sum(n.per.stratum) (= %d).",
+      n, sum.counts
+    )
+
+    warning(text, call. = FALSE)
+  }
+}
+
+# resetRowNames ----------------------------------------------------------------
+resetRowNames <- function(x)
+{
+  rownames(x) <- NULL
+  x
 }
 
 # readRealData -----------------------------------------------------------------
