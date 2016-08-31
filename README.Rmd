@@ -18,7 +18,11 @@ set.seed(12345)
 
 # blockrand2
 
-This R package helps you to create block randomised treatment lists for clinical studies.
+This R package helps you to create block randomised treatment lists for clinical studies.It is highly inspired by and quite similar to the existing package `blockrand` that is available on [CRAN](https://cran.r-project.org/web/packages/blockrand/index.html), but was developed independently. Compared to `blockrand` it offers additional functionality:
+
+- generation of test data,
+- stratification of patient's data,
+- generation of a report (html, pdf and/or docx).
 
 ## Installation
 
