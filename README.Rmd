@@ -10,6 +10,10 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "README-"
 )
+
+# Set the seed of the random generator so that the output
+# of random data does not always change
+set.seed(12345)
 ```
 
 # blockrand2
@@ -39,7 +43,7 @@ library(blockrand2)
 
 Start by defining the title of the study, the author's name and the date in form
 of a list with list elements `title`, `author` and `date`. These information 
-will appear on top of the created documents.
+will appear on top of the created document(s).
 
 ```{r define_header}
 # Define the title of the study, the author and the date
@@ -110,10 +114,10 @@ Otherwise the following steps will not work properly.
 
 That's more or less it. All you have to do now is to call the function 
 `createRandomisationDoc()` to which you have to pass the `patient`'s data, the
-definition of `straVars` and the `treatments` as well as the information going
-into the `header` of the documents to be created. The argument `newpage` 
+definition of `strataVars` and the `treatments` as well as the information going
+into the `header` of the document(s) to be created. The argument `newpage` 
 controls (only for output format "pdf") whether a new page is to be started 
-after each list showing the patient's and their assigned treatment for one 
+after each list showing the patient's data and their assigned treatments for one 
 stratum.
 
 ```{r create_docs_hide, echo=FALSE, message=FALSE, warning=TRUE}
@@ -138,22 +142,21 @@ files <- createRandomisationDoc(
 ```
 
 The full paths to the generated files are returned invisibly. Since we stored
-these paths in the variable `files` we can not review these paths
+these paths in the variable `files` (being a `list`) we can review these paths
 
 ```{r show_files}
 # Show the paths of the created files
 files
 ```
 
-but also use them from within `R` to open the created files with their 
-appropriate applications (if defined in the `options()`):
+and use them directly to open the created files from within `R` with their appropriate applications (if available):
 
 ```{r open_files, eval = FALSE}
 # Open the html file in the default browser
-browseURL(files["html"])
+browseURL(files$html)
 
 # Open the pdf file in the default PDF viewer
-system(paste(getOption("pdfviewer"), files["pdf"]))
+system(paste(getOption("pdfviewer"), files$pdf))
 ```
 
 By default, the randomisation list document is created in three formats: 

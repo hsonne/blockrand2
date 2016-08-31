@@ -26,7 +26,7 @@ library(blockrand2)
 
 ### Define Document Header
 
-Start by defining the title of the study, the author's name and the date in form of a list with list elements `title`, `author` and `date`. These information will appear on top of the created documents.
+Start by defining the title of the study, the author's name and the date in form of a list with list elements `title`, `author` and `date`. These information will appear on top of the created document(s).
 
 ``` r
 # Define the title of the study, the author and the date
@@ -73,12 +73,12 @@ Let's have a look at the first lines of the created table:
 ``` r
 head(patients)
 #>   patient    sex crazyness
-#> 1    P001   male      weak
-#> 2    P002   male    medium
-#> 3    P003 female      weak
-#> 4    P004 female    medium
-#> 5    P005 female    medium
-#> 6    P006   male    strong
+#> 1    P001 female    strong
+#> 2    P002 female    medium
+#> 3    P003 female    strong
+#> 4    P004 female    strong
+#> 5    P005   male      weak
+#> 6    P006   male      weak
 ```
 
 Once you have prepared a file (e.g. in CSV format) containing the real data you will replace the above line with something like this:
@@ -92,7 +92,7 @@ Make sure that the number of columns and the column names in your file are the s
 
 ### Create the Randomisation List Document(s)
 
-That's more or less it. All you have to do now is to call the function `createRandomisationDoc()` to which you have to pass the `patient`'s data, the definition of `straVars` and the `treatments` as well as the information going into the `header` of the documents to be created. The argument `newpage` controls (only for output format "pdf") whether a new page is to be started after each list showing the patient's and their assigned treatment for one stratum.
+That's more or less it. All you have to do now is to call the function `createRandomisationDoc()` to which you have to pass the `patient`'s data, the definition of `strataVars` and the `treatments` as well as the information going into the `header` of the document(s) to be created. The argument `newpage` controls (only for output format "pdf") whether a new page is to be started after each list showing the patient's data and their assigned treatments for one stratum.
 
 ``` r
 # Create the randomisation list documents
@@ -105,27 +105,29 @@ files <- createRandomisationDoc(
 )
 ```
 
-The full paths to the generated files are returned invisibly. Since we stored these paths in the variable `files` we can not review these paths
+The full paths to the generated files are returned invisibly. Since we stored these paths in the variable `files` (being a `list`) we can review these paths
 
 ``` r
 # Show the paths of the created files
 files
-#>                                         docx 
-#> "/tmp/Rtmp6l2PHg/blockrand2/randomList.docx" 
-#>                                         html 
-#> "/tmp/Rtmp6l2PHg/blockrand2/randomList.html" 
-#>                                          pdf 
-#>  "/tmp/Rtmp6l2PHg/blockrand2/randomList.pdf"
+#> $docx
+#> [1] "/tmp/RtmpB2JZ5T/blockrand2/randomList.docx"
+#> 
+#> $html
+#> [1] "/tmp/RtmpB2JZ5T/blockrand2/randomList.html"
+#> 
+#> $pdf
+#> [1] "/tmp/RtmpB2JZ5T/blockrand2/randomList.pdf"
 ```
 
-but also use them from within `R` to open the created files with their appropriate applications (if defined in the `options()`):
+and use them directly to open the created files from within `R` with their appropriate applications (if available):
 
 ``` r
 # Open the html file in the default browser
-browseURL(files["html"])
+browseURL(files$html)
 
 # Open the pdf file in the default PDF viewer
-system(paste(getOption("pdfviewer"), files["pdf"]))
+system(paste(getOption("pdfviewer"), files$pdf))
 ```
 
 By default, the randomisation list document is created in three formats: `"html", "word"` and `"pdf"`. This is controlled by the formal argument `format` of `createRandomisationDoc()`. If, for example you do not have LaTeX installed which is the requirement to create the document in PDF format, you may select to e.g. only generate `"word"` format:
