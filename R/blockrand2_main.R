@@ -237,15 +237,15 @@ createCombinations <- function(x)
 }
 
 # mergeAll ---------------------------------------------------------------------
-mergeAll <- function(L)
+mergeAll <- function(x)
 {
-  for (i in seq_along(L)) {
+  stopifnot(is.list(x))
+  stopifnot(all(sapply(x, is.data.frame)))
 
-    if (i == 1) {
-      out <- L[[i]]
-    } else {
-      out <- merge(out, L[[i]])
-    }
+  out <- x[[1]]
+
+  for (dataFrame in x[-1]) {
+    out <- merge(out, dataFrame)
   }
 
   out
