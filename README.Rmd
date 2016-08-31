@@ -18,8 +18,7 @@ set.seed(12345)
 
 # blockrand2
 
-This R package helps you to create block randomised treatment lists for clinical
-studies.
+This R package helps you to create block randomised treatment lists for clinical studies.
 
 ## Installation
 

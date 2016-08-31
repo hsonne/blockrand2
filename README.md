@@ -111,13 +111,13 @@ The full paths to the generated files are returned invisibly. Since we stored th
 # Show the paths of the created files
 files
 #> $docx
-#> [1] "/tmp/RtmpB2JZ5T/blockrand2/randomList.docx"
+#> [1] "/tmp/RtmpLNPt63/blockrand2/randomList.docx"
 #> 
 #> $html
-#> [1] "/tmp/RtmpB2JZ5T/blockrand2/randomList.html"
+#> [1] "/tmp/RtmpLNPt63/blockrand2/randomList.html"
 #> 
 #> $pdf
-#> [1] "/tmp/RtmpB2JZ5T/blockrand2/randomList.pdf"
+#> [1] "/tmp/RtmpLNPt63/blockrand2/randomList.pdf"
 ```
 
 and use them directly to open the created files from within `R` with their appropriate applications (if available):
