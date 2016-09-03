@@ -24,9 +24,10 @@ This R package helps you to create block randomised treatment lists for clinical
 - stratification of patient's data,
 - generation of a report (html, pdf and/or docx).
 
-For the output created by the following example session see here: [HTML](https://github.com/hsonne/blockrand2/tree/master/inst/extdata/randomList.html)
-[PDF](https://github.com/hsonne/blockrand2/tree/master/inst/extdata/randomList.pdf)
-[DOCX](https://github.com/hsonne/blockrand2/tree/master/inst/extdata/randomList.docx)
+For the output created by the following example session see here: 
+[HTML](https://hsonne.github.io/blockrand2/randomList.html)
+[PDF](https://hsonne.github.io/blockrand2/randomList.pdf)
+[DOCX](https://hsonne.github.io/blockrand2/randomList.docx)
 
 ## Installation
 
@@ -159,7 +160,7 @@ files
 ```{r copy_files, echo = FALSE, include = FALSE}
 # Copy html file to inst/extdata
 for (file in files) {
-  file.copy(file, "inst/extdata")
+  file.copy(file, "docs")
 }
 ```
 
